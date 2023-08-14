@@ -30,7 +30,8 @@ const getStudent = () => {
         <td>${student.reg}</td>
         <td>${timeAgo(student.createdTime)}</td>
         <td>
-          <button type="button" class="btn btn-primary">Add Result</button>
+        ${(student.result === null) ? '<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addStudentResult" >Add Result</button>' : '<button type="button" class="btn btn-warning">View Result</button>'}
+
         </td>
         <td>
           <button class="btn btn-sm bg-info text-light" data-bs-toggle="modal" data-bs-target="#showStudentInfo" onClick = showStudentData('${student.id}')><i class="fa-solid fa-eye" ></i></button>
