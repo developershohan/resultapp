@@ -3,6 +3,8 @@ const alertMsg = document.querySelector(".msg");
 const all_student_list = document.querySelector(".all_student_list");
 const singleStudentInfo = document.querySelector(".singleStudentInfo");
 const edit_student_form = document.querySelector("#edit_student_form");
+const student_result_form = document.querySelector("#student_result_form");
+const edit_student_result_form = document.querySelector("#edit_student_result_form");
 const msg_edit = document.querySelector(".msg_edit");
 
 //show data
@@ -30,7 +32,7 @@ const getStudent = () => {
         <td>${student.reg}</td>
         <td>${timeAgo(student.createdTime)}</td>
         <td>
-        ${(student.result === null) ? '<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addStudentResult" >Add Result</button>' : '<button type="button" class="btn btn-warning">View Result</button>'}
+        ${(student.result === null) ? '<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addStudentResult" onClick = addStudentResult(\'' + student.id + '\')  >Add Result</button>' : '<button type="button" class="btn btn-warning " data-bs-toggle="modal" data-bs-target="#editStudentResult" onClick = editStudentResult(\'' + student.id + '\')>View Result</button>'}
 
         </td>
         <td>
@@ -179,3 +181,63 @@ create_student_form.addEventListener("submit", function (e) {
 
     }
 })
+
+
+
+// add result
+
+
+const addStudentResult = (id) =>{
+
+    student_result_form.querySelector('input[name="id"]').value = id
+
+}
+
+student_result_form.onsubmit = (e) =>{
+    e.preventDefault()
+    
+    const result_form_data = new FormData(student_result_form)
+    const result_data = Object.fromEntries(result_form_data.entries())
+    
+    
+    const oldData = getDataLS("students")
+    
+    oldData[oldData.findIndex(item => item.id ===result_data.id)] = {
+        ...oldData[oldData.findIndex(item => item.id ===result_data.id)],
+        result: result_data
+    }
+    sendDataLS("students",oldData)
+    getStudent()
+    e.target.reset()
+    
+}
+const editStudentResult = (id) =>{
+
+const oldData = getDataLS("students")
+
+const newResultData = oldData.find(item => item.id === id)
+
+edit_student_result_form.querySelector('input[name=bangla]').value = newResultData.result.bangla
+edit_student_result_form.querySelector('input[name=english]').value = newResultData.result.english
+edit_student_result_form.querySelector('input[name=math]').value = newResultData.result.math
+edit_student_result_form.querySelector('input[name=id]').value = newResultData.result.id
+
+}
+
+edit_student_result_form.onsubmit =(e) =>{
+    e.preventDefault()
+
+    const oldData = getDataLS("students")
+
+    const formData = new FormData(edit_student_result_form)
+    const updatedData = Object.fromEntries(formData.entries())
+
+
+    oldData[oldData.findIndex(item => item.id === updatedData.id )] = {
+        ...oldData[oldData.findIndex(item => item.id === updatedData.id )],
+        result : updatedData
+    }
+    sendDataLS("students", oldData)
+    getStudent()
+
+}
